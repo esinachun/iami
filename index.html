@@ -152,18 +152,18 @@
             height: 70vh; width: auto; flex-shrink: 0; border-radius: 1rem;
             overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
-        .detail-image-wrapper img { height: 100%; width: auto; object-fit: cover; }
+        .detail-image-wrapper img, .detail-image-wrapper video { height: 100%; width: auto; object-fit: cover; }
         
         .detail-next {
             width: 60vw; height: 100vh; flex-shrink: 0; position: relative;
             display: flex; align-items: center; justify-content: center;
             overflow: hidden; cursor: pointer; background: #111;
         }
-        .detail-next img {
+        .detail-next img, .detail-next video {
             position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
             opacity: 0.4; transition: opacity 0.5s, transform 0.7s;
         }
-        .detail-next:hover img { opacity: 0.6; transform: scale(1.05); }
+        .detail-next:hover img, .detail-next:hover video { opacity: 0.6; transform: scale(1.05); }
         .detail-next-content { position: relative; z-index: 10; text-align: center; color: white; }
 
         /* Mobile Responsive */
@@ -176,7 +176,7 @@
             .detail-intro, .detail-images, .detail-next { width: 100%; height: auto; min-width: 0; padding: 2rem; }
             .detail-images { flex-direction: column; gap: 1rem; }
             .detail-image-wrapper { width: 100%; height: auto; margin-bottom: 1rem; }
-            .detail-image-wrapper img { width: 100%; height: auto; }
+            .detail-image-wrapper img, .detail-image-wrapper video { width: 100%; height: auto; }
             .detail-next { height: 50vh; }
         }
     </style>
@@ -242,6 +242,7 @@
                     <button class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-brand-pink hover:text-brand-pink font-medium transition-all" data-filter="illustration">Illustration</button>
                     <button class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-brand-blue hover:text-brand-blue font-medium transition-all" data-filter="character">Character</button>
                     <button class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-brand-purple hover:text-brand-purple font-medium transition-all" data-filter="logo">Logo</button>
+                    <button class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-brand-yellow hover:text-brand-yellow font-medium transition-all" data-filter="Motion">Motion</button>
                 </div>
             </div>
 
@@ -342,9 +343,22 @@
         const fallbackData = [
           {
             "id": 1,
+            "title": "모션 그래픽 쇼릴",
+            "category": "Motion",
+            "featured": true,
+            "type": "video",
+            "year": "2024",
+            "client": "Studio Motion",
+            "image": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            "detailImages": [],
+            "desc": "3D 모션 그래픽 작업물입니다. 캐릭터 애니메이션과 시각 효과를 중점으로 작업했습니다."
+          },
+          {
+            "id": 2,
             "title": "숲속의 친구들",
             "category": "illustration",
             "featured": true,
+            "type": "image",
             "year": "2023",
             "client": "Kids Book Co.",
             "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop",
@@ -352,10 +366,11 @@
             "desc": "숲속 동물들의 따뜻한 일상을 담은 동화책 삽화 프로젝트입니다."
           },
           {
-            "id": 2,
+            "id": 3,
             "title": "버거 킹덤",
             "category": "character",
             "featured": true,
+            "type": "image",
             "year": "2024",
             "client": "Burger Kingdom",
             "image": "https://images.unsplash.com/photo-1620608560965-05562d421d09?q=80&w=800&auto=format&fit=crop",
@@ -363,10 +378,11 @@
             "desc": "브랜드 리뉴얼을 위한 마스코트 캐릭터 디자인."
           },
           {
-            "id": 3,
+            "id": 4,
             "title": "모던 카페 로고",
             "category": "logo",
             "featured": false,
+            "type": "image",
             "year": "2023",
             "client": "Cafe Modern",
             "image": "https://images.unsplash.com/photo-1626785774573-4b799314346d?q=80&w=800&auto=format&fit=crop",
@@ -374,21 +390,23 @@
             "desc": "미니멀리즘을 기반으로 한 카페 브랜딩 프로젝트입니다."
           },
           {
-            "id": 4,
+            "id": 5,
             "title": "우주 여행자",
             "category": "illustration",
             "featured": true,
+            "type": "image",
             "year": "2022",
             "client": "Personal Work",
             "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800&auto=format&fit=crop",
-            "detailImages": [], // Empty for single image test
+            "detailImages": [], 
             "desc": "미지의 행성을 탐험하는 우주비행사의 여정."
           },
           {
-            "id": 5,
+            "id": 6,
             "title": "테크 스타트업",
             "category": "logo",
             "featured": false,
+            "type": "image",
             "year": "2024",
             "client": "Next Tech",
             "image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop",
@@ -419,6 +437,22 @@
         const featuredContainer = document.getElementById('featured-container');
         const worksGrid = document.getElementById('works-grid');
         const detailTrack = document.getElementById('detail-track');
+
+        // Helper: Media HTML Generation
+        function getMediaHTML(item) {
+            const imgClass = "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105";
+            if (item.type === 'video') {
+                return `
+                    <video src="${item.image}" class="${imgClass}" autoplay muted loop playsinline poster="${item.poster || ''}"></video>
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                `;
+            } else {
+                return `
+                    <img src="${item.image}" class="${imgClass}" alt="${item.title}" loading="lazy">
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                `;
+            }
+        }
 
         // --- 1. Routing & Navigation ---
         function navigateTo(viewName) {
@@ -500,6 +534,9 @@
                 const hasStack = item.detailImages && item.detailImages.length > 0;
                 const secondImage = hasStack ? item.detailImages[0] : '';
 
+                // Get Media HTML
+                const mediaHTML = getMediaHTML(item);
+
                 card.innerHTML = `
                     <!-- Image Wrapper -->
                     <div class="relative w-full h-[50vh] md:h-[70vh]">
@@ -512,8 +549,7 @@
                         
                         <!-- Front Card (Main Image) -->
                         <div class="absolute inset-0 w-full h-full rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-white relative z-10 ring-1 ring-black/5">
-                            <img src="${item.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                            ${mediaHTML}
                         </div>
                     </div>
                     
@@ -541,6 +577,9 @@
                 const hasStack = item.detailImages && item.detailImages.length > 0;
                 const secondImage = hasStack ? item.detailImages[0] : '';
 
+                // Get Media HTML
+                const mediaHTML = getMediaHTML(item);
+
                 card.innerHTML = `
                     <div class="w-full h-full relative">
                         ${hasStack ? `
@@ -552,7 +591,7 @@
 
                         <!-- Front Card -->
                         <div class="absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-500 z-10 ring-1 ring-black/5">
-                            <img src="${item.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            ${mediaHTML}
                             <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                                 <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                     <span class="text-xs font-bold uppercase tracking-wider text-brand-pink">${item.category}</span>
@@ -609,7 +648,16 @@
             imgs.forEach(url => {
                 const wrap = document.createElement('div');
                 wrap.className = 'detail-image-wrapper';
-                wrap.innerHTML = `<img src="${url}">`;
+                // Note: Simply putting all as img for detail view simplicity unless complex logic needed
+                // If main image is video, it will show as video here if passed as such, 
+                // but usually detailImages are static. If main image is video, we might want to render it as video.
+                // For this demo, let's treat the main image based on item.type if it's the only one.
+                
+                if (url === item.image && item.type === 'video') {
+                     wrap.innerHTML = `<video src="${url}" controls autoplay muted loop playsinline class="w-full h-full object-cover"></video>`;
+                } else {
+                     wrap.innerHTML = `<img src="${url}">`;
+                }
                 imagesDiv.appendChild(wrap);
             });
             detailTrack.appendChild(imagesDiv);
@@ -622,8 +670,14 @@
                 state.detailScroll = 0; 
                 state.detailTargetScroll = 0;
             };
+            
+            // Next Project Preview (Handle Video)
+            const nextMediaHTML = nextItem.type === 'video' 
+                ? `<video src="${nextItem.image}" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-40 transition-opacity duration-500 group-hover:opacity-60 transform group-hover:scale-105 transition-transform duration-700"></video>`
+                : `<img src="${nextItem.image}" class="absolute inset-0 w-full h-full object-cover opacity-40 transition-opacity duration-500 group-hover:opacity-60 transform group-hover:scale-105 transition-transform duration-700">`;
+
             nextDiv.innerHTML = `
-                <img src="${nextItem.image}">
+                ${nextMediaHTML}
                 <div class="detail-next-content">
                     <div class="text-brand-yellow font-bold uppercase tracking-widest mb-2 text-sm">Next Project</div>
                     <h2 class="text-5xl md:text-7xl font-display font-extrabold group-hover:scale-110 transition-transform duration-500">${nextItem.title}</h2>
