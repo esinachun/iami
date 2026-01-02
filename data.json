@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "title": "숲속의 친구들",
+    "category": "illustration",
+    "year": "2023",
+    "client": "Kids Book Co.",
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop",
+    "detailImages": [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200",
+      "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1200",
+      "https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=1200"
+    ],
+    "desc": "숲속 동물들의 따뜻한 일상을 담은 동화책 삽화 프로젝트입니다. 수채화 텍스처를 활용하여 포근한 느낌을 연출했습니다."
+  },
+  {
+    "id": 2,
+    "title": "버거 킹덤",
+    "category": "character",
+    "year": "2024",
+    "client": "Burger Kingdom",
+    "image": "https://images.unsplash.com/photo-1620608560965-05562d421d09?q=80&w=800&auto=format&fit=crop",
+    "detailImages": [
+      "https://images.unsplash.com/photo-1620608560965-05562d421d09?q=80&w=1200",
+      "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1200"
+    ],
+    "desc": "브랜드 리뉴얼을 위한 마스코트 캐릭터 디자인. 햄버거의 재료들을 의인화하여 생동감 넘치는 캐릭터 패밀리를 제작했습니다."
+  },
+  {
+    "id": 3,
+    "title": "모던 카페 로고",
+    "category": "logo",
+    "year": "2023",
+    "client": "Cafe Modern",
+    "image": "https://images.unsplash.com/photo-1626785774573-4b799314346d?q=80&w=800&auto=format&fit=crop",
+    "detailImages": [
+      "https://images.unsplash.com/photo-1626785774573-4b799314346d?q=80&w=1200",
+      "https://images.unsplash.com/photo-1507133750069-69d3cdad19a5?q=80&w=1200"
+    ],
+    "desc": "미니멀리즘을 기반으로 한 카페 브랜딩 프로젝트입니다. 심플한 타이포그래피와 모노톤 컬러 팔레트를 사용했습니다."
+  },
+  {
+    "id": 4,
+    "title": "우주 여행자",
+    "category": "illustration",
+    "year": "2022",
+    "client": "Personal Work",
+    "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800&auto=format&fit=crop",
+    "detailImages": [
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1200",
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200"
+    ],
+    "desc": "미지의 행성을 탐험하는 우주비행사의 여정을 그린 컨셉 아트워크 시리즈입니다."
+  },
+  {
+    "id": 5,
+    "title": "테크 스타트업",
+    "category": "logo",
+    "year": "2024",
+    "client": "Next Tech",
+    "image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop",
+    "detailImages": [
+      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1200",
+      "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1200"
+    ],
+    "desc": "혁신과 연결을 상징하는 테크 기업의 CI 디자인입니다. 블루 그라데이션을 메인 컬러로 사용했습니다."
+  }
+]
