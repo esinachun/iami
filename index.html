@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>아이엠아이 디자인</title>
+    <title>크리에이티브 포트폴리오</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,11 +35,15 @@
                         }
                     },
                     animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
                         'fade-in-up': 'fadeInUp 0.5s ease-out both',
                         'fade-in-right': 'fadeInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) both',
-                        'slide-in-bottom': 'slideInBottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
                     keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
                         fadeInUp: {
                             '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
@@ -47,10 +51,6 @@
                         fadeInRight: {
                             '0%': { opacity: '0', transform: 'translateX(50px)' },
                             '100%': { opacity: '1', transform: 'translateX(0)' },
-                        },
-                        slideInBottom: {
-                            '0%': { transform: 'translateY(100%)' },
-                            '100%': { transform: 'translateY(0)' }
                         }
                     }
                 }
@@ -76,22 +76,30 @@
         }
 
         body {
-            overflow: hidden; /* JS로 스크롤 제어 */
-            height: 100vh;
             background-color: #F7FAFC;
+            overflow-x: hidden; /* 가로 스크롤 방지 */
         }
 
-        /* 공통 가로 스크롤 컨테이너 스타일 */
-        .horizontal-scroll-container {
-            display: flex;
+        /* 뷰 컨테이너 (페이지 전환용) */
+        .view-section {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .view-section.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* --- HOME VIEW (Horizontal) --- */
+        #home-view.active {
+            display: flex; /* Horizontal Layout */
             flex-direction: row;
-            height: 100vh;
             width: fit-content;
-            /* JS 애니메이션과 충돌 방지 */
-            will-change: transform; 
         }
-
-        /* 메인 뷰 섹션 */
+        
         .horizontal-section {
             width: 100vw;
             height: 100vh;
@@ -102,7 +110,17 @@
             overflow: hidden;
         }
 
-        /* 상세 페이지 스타일 */
+        /* --- WORKS VIEW (Vertical Grid) --- */
+        #works-view {
+            padding-top: 100px; /* Header Height */
+        }
+
+        /* --- ABOUT & CONTACT VIEW --- */
+        #about-view {
+            padding-top: 100px;
+        }
+
+        /* Detail View (Overlay) */
         #detail-view {
             position: fixed;
             top: 0;
@@ -114,175 +132,73 @@
             transform: translateY(100%);
             transition: transform 0.6s cubic-bezier(0.83, 0, 0.17, 1);
         }
-        
         #detail-view.active {
             transform: translateY(0);
         }
-
         .detail-track {
             display: flex;
             height: 100vh;
-            padding-left: 0;
             width: fit-content;
         }
-
-        /* 상세 페이지 내부 섹션들 */
         .detail-intro {
-            width: 40vw;
-            min-width: 400px;
-            height: 100vh;
-            flex-shrink: 0;
-            padding: 4rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-right: 1px solid #eee;
-            background: white;
-            z-index: 10;
+            width: 40vw; min-width: 400px; height: 100vh; flex-shrink: 0;
+            padding: 4rem; display: flex; flex-direction: column; justify-content: center;
+            border-right: 1px solid #eee; background: white; z-index: 10;
         }
-
         .detail-images {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            padding: 0 4rem;
-            height: 100vh;
-            flex-shrink: 0; /* 중요: 이미지가 많아도 공간이 줄어들지 않도록 설정 */
+            display: flex; align-items: center; gap: 2rem; padding: 0 4rem; height: 100vh; flex-shrink: 0;
         }
-
         .detail-image-wrapper {
-            height: 70vh;
-            width: auto;
-            flex-shrink: 0;
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            height: 70vh; width: auto; flex-shrink: 0; border-radius: 1rem;
+            overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
+        .detail-image-wrapper img { height: 100%; width: auto; object-fit: cover; }
         
-        .detail-image-wrapper img {
-            height: 100%;
-            width: auto;
-            object-fit: cover;
-        }
-
-        /* Next Project Section Style */
         .detail-next {
-            width: 60vw;
-            height: 100vh;
-            flex-shrink: 0;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            cursor: pointer;
-            background: #111;
+            width: 60vw; height: 100vh; flex-shrink: 0; position: relative;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; cursor: pointer; background: #111;
         }
         .detail-next img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.4;
-            transition: opacity 0.5s, transform 0.7s;
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            opacity: 0.4; transition: opacity 0.5s, transform 0.7s;
         }
-        .detail-next:hover img {
-            opacity: 0.6;
-            transform: scale(1.05);
-        }
-        .detail-next-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            color: white;
-        }
+        .detail-next:hover img { opacity: 0.6; transform: scale(1.05); }
+        .detail-next-content { position: relative; z-index: 10; text-align: center; color: white; }
 
-        /* 모바일 대응 */
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            body {
-                overflow: auto;
-                height: auto;
+            #home-view.active {
+                flex-direction: column; width: 100%; height: auto;
             }
-            .horizontal-scroll-container {
-                flex-direction: column;
-                width: 100%;
-                height: auto;
-                transform: none !important;
-            }
-            .horizontal-section {
-                width: 100%;
-                height: auto;
-                min-height: 100vh;
-            }
-            .portfolio-track {
-                flex-direction: column;
-                height: auto;
-                padding: 2rem 1rem;
-            }
-            #gallery-container {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            /* 모바일 상세 페이지 */
-            #detail-view {
-                position: fixed;
-                overflow-y: auto;
-            }
-            .detail-track {
-                flex-direction: column;
-                width: 100%;
-                height: auto;
-                transform: none !important;
-            }
-            .detail-intro {
-                width: 100%;
-                min-width: 0;
-                height: auto;
-                padding: 2rem;
-                min-height: 60vh;
-            }
-            .detail-images {
-                flex-direction: column;
-                width: 100%;
-                height: auto;
-                padding: 2rem;
-            }
-            .detail-image-wrapper {
-                width: 100%;
-                height: auto;
-                margin-bottom: 2rem;
-            }
-            .detail-image-wrapper img {
-                width: 100%;
-                height: auto;
-            }
-            .detail-next {
-                width: 100%;
-                height: 50vh;
-            }
+            .horizontal-section { width: 100%; height: auto; min-height: 100vh; }
+            .detail-track { flex-direction: column; width: 100%; }
+            .detail-intro, .detail-images, .detail-next { width: 100%; height: auto; min-width: 0; padding: 2rem; }
+            .detail-images { flex-direction: column; gap: 1rem; }
+            .detail-image-wrapper { width: 100%; height: auto; margin-bottom: 1rem; }
+            .detail-image-wrapper img { width: 100%; height: auto; }
+            .detail-next { height: 50vh; }
         }
     </style>
 </head>
 <body class="bg-brand-light text-brand-dark font-sans selection:bg-brand-yellow selection:text-brand-dark">
 
     <!-- Header -->
-    <header class="fixed top-0 z-[110] w-full bg-brand-light/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
+    <header class="fixed top-0 z-[110] w-full bg-brand-light/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
-                <div class="flex-shrink-0 cursor-pointer" onclick="resetToHome()">
+                <div class="flex-shrink-0 cursor-pointer" onclick="navigateTo('home')">
                     <span class="font-display font-extrabold text-2xl tracking-tighter text-brand-dark">
-                        IAMI<span class="text-brand-pink">DESIGN</span>.
+                        MY<span class="text-brand-pink">PORTFOLIO</span>.
                     </span>
                 </div>
 
                 <!-- Desktop Nav -->
-                <nav class="hidden md:flex space-x-8" id="main-nav">
-                    <a href="#portfolio" class="font-medium text-gray-600 hover:text-brand-pink transition-colors nav-link">작품보기</a>
-                    <a href="#about" class="font-medium text-gray-600 hover:text-brand-blue transition-colors nav-link">소개</a>
-                    <a href="#contact" class="font-medium text-gray-600 hover:text-brand-purple transition-colors nav-link">문의하기</a>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#home" class="font-medium text-gray-600 hover:text-brand-pink transition-colors nav-link" onclick="navigateTo('home'); return false;">Home</a>
+                    <a href="#works" class="font-medium text-gray-600 hover:text-brand-blue transition-colors nav-link" onclick="navigateTo('works'); return false;">Works</a>
+                    <a href="#about" class="font-medium text-gray-600 hover:text-brand-purple transition-colors nav-link" onclick="navigateTo('about'); return false;">About</a>
                 </nav>
 
                 <!-- Mobile Menu Button -->
@@ -293,80 +209,127 @@
                 </div>
             </div>
         </div>
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0">
+            <div class="px-4 pt-2 pb-6 space-y-2 text-center">
+                <a href="#home" class="block py-3 text-lg font-medium text-gray-700" onclick="navigateTo('home'); toggleMobileMenu(); return false;">Home</a>
+                <a href="#works" class="block py-3 text-lg font-medium text-gray-700" onclick="navigateTo('works'); toggleMobileMenu(); return false;">Works</a>
+                <a href="#about" class="block py-3 text-lg font-medium text-gray-700" onclick="navigateTo('about'); toggleMobileMenu(); return false;">About</a>
+            </div>
+        </div>
     </header>
 
-    <!-- MAIN VIEW (Horizontal Scroll) -->
-    <main id="main-view" class="horizontal-scroll-container origin-center">
-        <!-- Hero Section -->
-        <section id="hero" class="horizontal-section relative bg-brand-light border-r border-gray-100">
-            <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
-                <h1 class="font-display text-5xl md:text-8xl font-extrabold tracking-tight mb-6 animate-fade-in-up">
-                    자연을<br class="md:hidden" />
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue">디자인합니다</span>
-                </h1>
-                <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500 animate-fade-in-up" style="animation-delay: 0.1s;">
-                    캐릭터 디자인, 일러스트레이션, 그리고 브랜드 아이덴티티.<br>
-                    다채로운 색감과 이야기로 가득 찬 작업을 만나보세요.
-                </p>
-            </div>
-        </section>
-
-        <!-- Portfolio Track -->
-        <section id="portfolio" class="horizontal-section !justify-start" style="width: auto; padding: 0 5vw; gap: 4rem;">
-            <!-- Intro & Filters -->
-            <div class="flex flex-col justify-center h-[70vh] w-[300px] md:w-[400px] flex-shrink-0 z-10 p-6 sticky left-20">
-                <h2 class="font-display text-5xl md:text-6xl font-bold mb-8 text-brand-dark leading-tight">
-                    Selected <br>
-                    <span class="text-brand-pink">Works</span>.
-                </h2>
-                <div class="flex flex-col items-start gap-3">
-                    <button class="filter-btn active w-full text-left px-6 py-3 rounded-2xl bg-brand-dark text-white font-bold transition-transform hover:translate-x-2" data-filter="all">All Projects</button>
-                    <button class="filter-btn w-full text-left px-6 py-3 rounded-2xl border border-gray-100 text-gray-500 hover:text-brand-pink font-medium transition-transform hover:translate-x-2" data-filter="illustration">Illustration</button>
-                    <button class="filter-btn w-full text-left px-6 py-3 rounded-2xl border border-gray-100 text-gray-500 hover:text-brand-blue font-medium transition-transform hover:translate-x-2" data-filter="character">Character Design</button>
-                </div>
-            </div>
-
-            <!-- Gallery Container -->
-            <div id="gallery-container" class="flex flex-row items-center gap-10 md:gap-16 h-full py-10 flex-shrink-0">
-                <!-- Items injected via JS -->
-                <div class="flex items-center justify-center w-[400px] h-full text-gray-400">
-                    <div class="text-center">
-                        <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2"></i>
-                        <p>Loading Projects...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="horizontal-section bg-brand-light border-l border-gray-100">
-            <div class="max-w-5xl mx-auto px-4 h-full flex items-center justify-center">
-                 <div class="bg-white rounded-[3rem] p-8 md:p-16 shadow-2xl flex flex-col md:flex-row items-center gap-12 w-full transform hover:scale-105 transition-transform duration-500">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=ffdfbf" class="w-56 h-56 rounded-full border-8 border-white shadow-xl bg-white">
-                    <div>
-                        <h2 class="font-display text-4xl font-bold mb-6">안녕하세요!</h2>
-                        <p class="text-gray-600 text-lg">이야기가 있는 그림을 그리는 디자이너입니다.</p>
-                        <div class="flex gap-2 mt-6">
-                            <span class="px-3 py-1 bg-gray-100 rounded-full text-sm">#Illustration</span>
-                            <span class="px-3 py-1 bg-gray-100 rounded-full text-sm">#Character</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="horizontal-section bg-brand-dark text-white">
-            <div class="text-center">
-                <h2 class="font-display text-5xl font-bold mb-8">Let's Work Together</h2>
-                <a href="mailto:hello@example.com" class="inline-block bg-brand-yellow text-brand-dark font-bold px-10 py-5 rounded-full hover:bg-white transition-colors hover:scale-105 transform">메일 보내기</a>
+    <!-- ==== 1. HOME VIEW (Infinite Horizontal Scroll) ==== -->
+    <main id="home-view" class="view-section active">
+        <!-- Featured Gallery Container -->
+        <section class="horizontal-section !justify-start" style="width: auto; padding: 0; gap: 0;">
+            <div id="featured-container" class="flex flex-row items-center gap-10 md:gap-16 h-full py-10 flex-shrink-0 px-[5vw]">
+                <!-- Injected via JS -->
             </div>
         </section>
     </main>
 
-    <!-- DETAIL VIEW (Overlay, Horizontal Scroll) -->
+    <!-- ==== 2. WORKS VIEW (Grid Layout - All Works) ==== -->
+    <section id="works-view" class="view-section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+            <div class="text-center mb-16 pt-10">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">All Projects</h2>
+                <p class="text-gray-500">카테고리별로 모든 작업물을 확인하세요.</p>
+                
+                <!-- Filters -->
+                <div class="flex flex-wrap justify-center gap-3 mt-8">
+                    <button class="filter-btn active px-6 py-2 rounded-full bg-brand-dark text-white font-bold transition-all border border-brand-dark" data-filter="all">All</button>
+                    <button class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-brand-pink hover:text-brand-pink font-medium transition-all" data-filter="illustration">Illustration</button>
+                    <button class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-brand-blue hover:text-brand-blue font-medium transition-all" data-filter="character">Character</button>
+                    <button class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-brand-purple hover:text-brand-purple font-medium transition-all" data-filter="logo">Logo</button>
+                </div>
+            </div>
+
+            <!-- Grid Container -->
+            <div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== 3. ABOUT VIEW (Merged with Contact) ==== -->
+    <section id="about-view" class="view-section bg-brand-light">
+        <!-- Intro Profile -->
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+            <div class="bg-white rounded-[3rem] p-8 md:p-16 shadow-xl flex flex-col md:flex-row items-center gap-12 w-full animate-fade-in-up mb-20">
+                <div class="w-full md:w-1/3 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-brand-yellow rounded-full blur-xl opacity-50 transform translate-x-2 translate-y-2"></div>
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=ffdfbf" alt="Profile" class="w-64 h-64 rounded-full border-8 border-white shadow-2xl relative z-10 bg-white">
+                    </div>
+                </div>
+                <div class="w-full md:w-2/3">
+                    <span class="text-brand-pink font-bold tracking-widest uppercase mb-2 block">Introduction</span>
+                    <h2 class="font-display text-4xl font-bold mb-6 text-brand-dark">안녕하세요, <br>이야기를 그리는 작가입니다.</h2>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                        저는 일상의 작은 순간들을 포착하여 따뜻한 색감으로 표현하는 것을 좋아합니다. 
+                        단순히 예쁜 그림을 넘어, 보는 이에게 즐거움과 공감을 줄 수 있는 시각적 경험을 만드는 것이 저의 목표입니다.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div>
+                            <h4 class="font-bold text-brand-dark mb-1">Tools</h4>
+                            <p class="text-gray-500 text-sm">Adobe Photoshop, Illustrator, Procreate, Figma</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark mb-1">Focus</h4>
+                            <p class="text-gray-500 text-sm">Character Design, Brand Identity, Editorial Illustration</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <a href="mailto:hello@example.com" class="px-6 py-3 bg-brand-dark text-white rounded-xl font-bold hover:bg-brand-blue transition-colors">이력서 요청</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Merged Contact Section -->
+            <div class="bg-brand-dark text-white rounded-[3rem] p-8 md:p-20 text-center shadow-2xl animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="mb-8 p-4 rounded-full bg-white/10 inline-block">
+                     <i data-lucide="mail-open" class="w-10 h-10 text-brand-yellow"></i>
+                </div>
+                <h2 class="font-display text-4xl md:text-6xl font-bold mb-6">Let's Work Together</h2>
+                <p class="text-gray-400 mb-12 text-xl max-w-xl mx-auto">
+                    새로운 프로젝트, 협업 제안, 혹은 가벼운 커피챗도 환영합니다.<br>
+                    당신의 아이디어를 현실로 만들어드릴게요.
+                </p>
+                
+                <a href="mailto:hello@example.com" class="group relative inline-flex items-center gap-3 bg-brand-yellow text-brand-dark font-extrabold px-12 py-6 rounded-full hover:bg-white transition-all transform hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(255,215,0,0.5)] overflow-hidden text-xl mb-12">
+                    <span class="relative z-10 flex items-center gap-2">
+                         <i data-lucide="send" class="w-6 h-6"></i> 메일 보내기
+                    </span>
+                </a>
+
+                <div class="grid grid-cols-3 gap-8 max-w-lg mx-auto">
+                    <a href="#" class="group flex flex-col items-center">
+                        <div class="p-4 bg-white/5 rounded-2xl mb-3 group-hover:bg-brand-pink/20 transition-colors w-full">
+                            <i data-lucide="instagram" class="w-8 h-8 mx-auto text-gray-300 group-hover:text-brand-pink"></i>
+                        </div>
+                        <span class="text-sm text-gray-500">Instagram</span>
+                    </a>
+                    <a href="#" class="group flex flex-col items-center">
+                        <div class="p-4 bg-white/5 rounded-2xl mb-3 group-hover:bg-brand-blue/20 transition-colors w-full">
+                            <i data-lucide="twitter" class="w-8 h-8 mx-auto text-gray-300 group-hover:text-brand-blue"></i>
+                        </div>
+                        <span class="text-sm text-gray-500">Twitter</span>
+                    </a>
+                    <a href="#" class="group flex flex-col items-center">
+                        <div class="p-4 bg-white/5 rounded-2xl mb-3 group-hover:bg-brand-purple/20 transition-colors w-full">
+                            <i data-lucide="dribbble" class="w-8 h-8 mx-auto text-gray-300 group-hover:text-brand-purple"></i>
+                        </div>
+                        <span class="text-sm text-gray-500">Dribbble</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== DETAIL VIEW (Overlay) ==== -->
     <div id="detail-view" class="overflow-hidden">
-        <div id="detail-track" class="detail-track horizontal-scroll-container">
+        <div id="detail-track" class="detail-track">
             <!-- Content Injected via JS -->
         </div>
     </div>
@@ -374,88 +337,259 @@
     <script>
         lucide.createIcons();
 
-        // Elements
-        const mainView = document.getElementById('main-view');
-        const detailView = document.getElementById('detail-view');
-        const detailTrack = document.getElementById('detail-track');
-        const galleryContainer = document.getElementById('gallery-container');
-        const mainNav = document.getElementById('main-nav');
-
-        // Scroll State
-        let state = {
-            view: 'main', // 'main' or 'detail'
-            mainScroll: 0,
-            detailScroll: 0,
-            targetScroll: 0,
-            isScrolling: false,
-            currentScale: 1.0
-        };
-        
-        // Data Container
+        // Data Management
         let portfolioItems = [];
+        const fallbackData = [
+          {
+            "id": 1,
+            "title": "숲속의 친구들",
+            "category": "illustration",
+            "featured": true,
+            "year": "2023",
+            "client": "Kids Book Co.",
+            "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop",
+            "detailImages": ["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200"],
+            "desc": "숲속 동물들의 따뜻한 일상을 담은 동화책 삽화 프로젝트입니다."
+          },
+          {
+            "id": 2,
+            "title": "버거 킹덤",
+            "category": "character",
+            "featured": true,
+            "year": "2024",
+            "client": "Burger Kingdom",
+            "image": "https://images.unsplash.com/photo-1620608560965-05562d421d09?q=80&w=800&auto=format&fit=crop",
+            "detailImages": ["https://images.unsplash.com/photo-1620608560965-05562d421d09?q=80&w=1200"],
+            "desc": "브랜드 리뉴얼을 위한 마스코트 캐릭터 디자인."
+          },
+          {
+            "id": 3,
+            "title": "모던 카페 로고",
+            "category": "logo",
+            "featured": false,
+            "year": "2023",
+            "client": "Cafe Modern",
+            "image": "https://images.unsplash.com/photo-1626785774573-4b799314346d?q=80&w=800&auto=format&fit=crop",
+            "detailImages": ["https://images.unsplash.com/photo-1626785774573-4b799314346d?q=80&w=1200"],
+            "desc": "미니멀리즘을 기반으로 한 카페 브랜딩 프로젝트입니다."
+          },
+          {
+            "id": 4,
+            "title": "우주 여행자",
+            "category": "illustration",
+            "featured": true,
+            "year": "2022",
+            "client": "Personal Work",
+            "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800&auto=format&fit=crop",
+            "detailImages": [], // Empty detailImages to test single image card
+            "desc": "미지의 행성을 탐험하는 우주비행사의 여정."
+          },
+          {
+            "id": 5,
+            "title": "테크 스타트업",
+            "category": "logo",
+            "featured": false,
+            "year": "2024",
+            "client": "Next Tech",
+            "image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop",
+            "detailImages": ["https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1200"],
+            "desc": "혁신과 연결을 상징하는 테크 기업의 CI 디자인입니다."
+          }
+        ];
 
-        // Load Data from JSON
-        async function loadData() {
-            try {
-                // 같은 폴더의 data.json을 fetch
-                const response = await fetch('./data.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                portfolioItems = await response.json();
-                
-                // 데이터 로드 성공 시 렌더링
-                renderGallery();
-            } catch (error) {
-                console.error('Failed to load portfolio data:', error);
-                galleryContainer.innerHTML = `
-                    <div class="p-8 text-red-500 bg-white rounded-xl shadow-lg">
-                        <h3 class="font-bold mb-2">데이터 로드 실패</h3>
-                        <p class="text-sm">로컬 환경에서는 보안 정책으로 인해 JSON 파일을 불러올 수 없을 수 있습니다.</p>
-                        <p class="text-sm mt-2">VS Code의 'Live Server'를 사용하거나 웹 서버 환경에서 실행해주세요.</p>
-                    </div>
-                `;
+        // Global State
+        const state = {
+            view: 'home',
+            currentScale: 1.0,
+            homeScroll: 0,
+            homeTargetScroll: 0,
+            isScrolling: false,
+            detailScroll: 0,
+            detailTargetScroll: 0,
+            singleSetWidth: 0 // Width of one set of featured items
+        };
+
+        // DOM Elements
+        const views = {
+            home: document.getElementById('home-view'),
+            works: document.getElementById('works-view'),
+            about: document.getElementById('about-view'),
+            detail: document.getElementById('detail-view')
+        };
+        const featuredContainer = document.getElementById('featured-container');
+        const worksGrid = document.getElementById('works-grid');
+        const detailTrack = document.getElementById('detail-track');
+
+        // --- 1. Routing & Navigation ---
+        function navigateTo(viewName) {
+            if (state.view === 'detail') {
+                closeDetail();
+                setTimeout(() => switchView(viewName), 300);
+            } else {
+                switchView(viewName);
             }
         }
 
-        // Render Main Gallery
-        function renderGallery(filter = 'all') {
-            if (portfolioItems.length === 0) return;
+        function switchView(viewName) {
+            state.view = viewName;
             
-            galleryContainer.innerHTML = '';
-            const filtered = filter === 'all' ? portfolioItems : portfolioItems.filter(i => i.category === filter);
+            Object.keys(views).forEach(key => {
+                if(key !== 'detail') {
+                    if (key === viewName) {
+                        views[key].classList.add('active');
+                    } else {
+                        views[key].classList.remove('active');
+                    }
+                }
+            });
 
-            filtered.forEach((item, idx) => {
-                const card = document.createElement('div');
-                card.className = `group relative w-[300px] md:w-[400px] h-[50vh] md:h-[70vh] flex-shrink-0 rounded-[2.5rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 bg-white animate-fade-in-right`;
-                card.style.animationDelay = `${idx * 0.1}s`;
-                card.onclick = () => openDetail(item);
-                
-                card.innerHTML = `
-                    <img src="${item.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
-                    <div class="absolute bottom-0 left-0 p-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <div class="text-xs font-bold uppercase tracking-wider mb-2 opacity-80">${item.category}</div>
-                        <h3 class="text-3xl font-display font-bold leading-tight">${item.title}</h3>
-                    </div>
-                `;
-                galleryContainer.appendChild(card);
+            if (viewName === 'home') {
+                document.body.style.overflow = 'hidden';
+                document.body.style.height = '100vh';
+            } else {
+                document.body.style.overflow = 'auto';
+                document.body.style.height = 'auto';
+                window.scrollTo(0, 0);
+            }
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const href = link.getAttribute('href').substring(1);
+                if(href === viewName) {
+                    link.classList.add('text-brand-pink');
+                    link.classList.remove('text-gray-600');
+                } else {
+                    link.classList.remove('text-brand-pink');
+                    link.classList.add('text-gray-600');
+                }
             });
         }
 
-        // Find Next Project
-        function getNextItem(currentItem) {
-            const currentIndex = portfolioItems.findIndex(i => i.id === currentItem.id);
-            const nextIndex = (currentIndex + 1) % portfolioItems.length;
-            return portfolioItems[nextIndex];
+        // --- 2. Data Loading & Rendering ---
+        async function loadData() {
+            try {
+                const response = await fetch('./data.json');
+                if (!response.ok) throw new Error();
+                portfolioItems = await response.json();
+            } catch (e) {
+                console.warn('Using fallback data');
+                portfolioItems = fallbackData;
+            }
+            renderHome();
+            renderWorks('all');
         }
 
-        // Open Detail View
+        function renderHome() {
+            featuredContainer.innerHTML = '';
+            const featuredItems = portfolioItems.filter(item => item.featured === true);
+            
+            const cardW = window.innerWidth < 768 ? 600 : 800;
+            const gap = window.innerWidth < 768 ? 40 : 64;
+            state.singleSetWidth = featuredItems.length * (cardW + gap);
+
+            state.homeScroll = state.singleSetWidth;
+            state.homeTargetScroll = state.singleSetWidth;
+
+            const infiniteItems = [...featuredItems, ...featuredItems, ...featuredItems];
+            
+            infiniteItems.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = `group relative w-[600px] md:w-[800px] flex-shrink-0 flex flex-col items-center justify-center cursor-pointer`;
+                card.onclick = () => openDetail(item);
+                
+                // Stack check: Only if detailImages exists and length > 0
+                const hasStack = item.detailImages && item.detailImages.length > 0;
+                const secondImage = hasStack ? item.detailImages[0] : '';
+
+                card.innerHTML = `
+                    <!-- Image Wrapper -->
+                    <div class="relative w-full h-[50vh] md:h-[70vh]">
+                        ${hasStack ? `
+                            <!-- Back Card (Stacked Effect) -->
+                            <div class="absolute inset-0 w-full h-full rounded-[3rem] overflow-hidden bg-gray-200 transform translate-x-6 translate-y-4 rotate-3 opacity-100 scale-[0.98] origin-center transition-transform duration-500 group-hover:rotate-6 group-hover:translate-x-10 shadow-lg border border-gray-100" style="z-index: 0;">
+                                <img src="${secondImage}" class="w-full h-full object-cover opacity-90 filter brightness-90">
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Front Card (Main Image) -->
+                        <div class="absolute inset-0 w-full h-full rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-white relative z-10 ring-1 ring-black/5">
+                            <img src="${item.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Text Info -->
+                    <div class="mt-8 text-center transition-all duration-500 group-hover:translate-y-2 relative z-20">
+                        <h3 class="text-3xl md:text-4xl font-display font-bold leading-tight text-gray-800 mb-2">${item.title}</h3>
+                        <div class="text-sm font-medium uppercase tracking-widest text-gray-400 font-sans">${item.category}</div>
+                    </div>
+                `;
+                featuredContainer.appendChild(card);
+            });
+        }
+
+        function renderWorks(filter) {
+            worksGrid.innerHTML = '';
+            const filtered = filter === 'all' ? portfolioItems : portfolioItems.filter(i => i.category === filter);
+            
+            filtered.forEach((item, idx) => {
+                const card = document.createElement('div');
+                // 수정됨: aspect-[4/3] -> aspect-square
+                // overflow-hidden, rounded-2xl 등을 내부 컨테이너로 이동하기 위해 제거
+                card.className = "group relative cursor-pointer aspect-square animate-fade-in";
+                card.style.animationDelay = `${idx * 0.05}s`;
+                card.onclick = () => openDetail(item);
+
+                // Stack Logic
+                const hasStack = item.detailImages && item.detailImages.length > 0;
+                const secondImage = hasStack ? item.detailImages[0] : '';
+
+                card.innerHTML = `
+                    <div class="w-full h-full relative">
+                        ${hasStack ? `
+                            <!-- Back Card (Stacked Effect for Grid) -->
+                            <div class="absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-gray-200 transform translate-x-2 translate-y-2 rotate-2 opacity-100 scale-[0.98] origin-center transition-transform duration-500 group-hover:rotate-6 group-hover:translate-x-3 shadow-md border border-gray-100" style="z-index: 0;">
+                                <img src="${secondImage}" class="w-full h-full object-cover opacity-90 filter brightness-90">
+                            </div>
+                        ` : ''}
+
+                        <!-- Front Card -->
+                        <div class="absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-500 z-10 ring-1 ring-black/5">
+                            <img src="${item.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-brand-pink">${item.category}</span>
+                                    <h3 class="text-xl font-bold mt-1">${item.title}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                worksGrid.appendChild(card);
+            });
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-brand-dark', 'text-white');
+                    b.classList.add('text-gray-500', 'border-gray-200');
+                });
+                e.target.classList.remove('text-gray-500', 'border-gray-200');
+                e.target.classList.add('bg-brand-dark', 'text-white');
+                renderWorks(e.target.dataset.filter);
+            });
+        });
+
+        // --- 3. Detail View Logic ---
+        function getNextItem(currentItem) {
+            const idx = portfolioItems.findIndex(i => i.id === currentItem.id);
+            return portfolioItems[(idx + 1) % portfolioItems.length];
+        }
+
         function openDetail(item) {
-            // 1. Setup Content
+            state.view = 'detail';
             detailTrack.innerHTML = '';
             
-            // 1-1. Intro Section
             const introDiv = document.createElement('div');
             introDiv.className = 'detail-intro';
             introDiv.innerHTML = `
@@ -465,107 +599,97 @@
                     <p class="text-xl text-gray-500 leading-relaxed mb-8 font-light">${item.desc}</p>
                 </div>
                 <div class="grid grid-cols-2 gap-8 text-sm border-t border-gray-100 pt-8">
-                    <div>
-                        <span class="block text-gray-400 font-bold uppercase tracking-wider mb-1">Client</span>
-                        <span class="font-medium text-gray-800">${item.client}</span>
-                    </div>
-                    <div>
-                        <span class="block text-gray-400 font-bold uppercase tracking-wider mb-1">Year</span>
-                        <span class="font-medium text-gray-800">${item.year}</span>
-                    </div>
+                    <div><span class="block text-gray-400 font-bold uppercase">Client</span> ${item.client}</div>
+                    <div><span class="block text-gray-400 font-bold uppercase">Year</span> ${item.year}</div>
                 </div>
             `;
             detailTrack.appendChild(introDiv);
 
-            // 1-2. Images Section
             const imagesDiv = document.createElement('div');
             imagesDiv.className = 'detail-images';
-            const imagesToShow = item.detailImages && item.detailImages.length > 0 ? item.detailImages : [item.image];
-            
-            imagesToShow.forEach(imgUrl => {
-                const imgWrap = document.createElement('div');
-                imgWrap.className = 'detail-image-wrapper';
-                imgWrap.innerHTML = `<img src="${imgUrl}" alt="Detail View" loading="lazy">`;
-                imagesDiv.appendChild(imgWrap);
+            const imgs = item.detailImages && item.detailImages.length ? item.detailImages : [item.image];
+            imgs.forEach(url => {
+                const wrap = document.createElement('div');
+                wrap.className = 'detail-image-wrapper';
+                wrap.innerHTML = `<img src="${url}">`;
+                imagesDiv.appendChild(wrap);
             });
             detailTrack.appendChild(imagesDiv);
 
-            // 1-3. Next Project Section
             const nextItem = getNextItem(item);
             const nextDiv = document.createElement('div');
             nextDiv.className = 'detail-next group';
             nextDiv.onclick = () => {
                 openDetail(nextItem);
+                state.detailScroll = 0; 
+                state.detailTargetScroll = 0;
             };
             nextDiv.innerHTML = `
-                <img src="${nextItem.image}" alt="Next Project">
+                <img src="${nextItem.image}">
                 <div class="detail-next-content">
                     <div class="text-brand-yellow font-bold uppercase tracking-widest mb-2 text-sm">Next Project</div>
                     <h2 class="text-5xl md:text-7xl font-display font-extrabold group-hover:scale-110 transition-transform duration-500">${nextItem.title}</h2>
-                    <div class="mt-4 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <span class="font-medium">View Case Study</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </div>
+                    <div class="mt-4 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">View Case Study <i data-lucide="arrow-right" class="w-5 h-5"></i></div>
                 </div>
             `;
             detailTrack.appendChild(nextDiv);
             
-            // Re-init Icons
             lucide.createIcons();
-
-            // 2. State Transition
-            state.view = 'detail';
+            
             state.detailScroll = 0;
-            state.targetScroll = 0; 
-            detailTrack.style.transform = `translateX(0px)`; 
-
-            // 3. UI Updates
-            detailView.classList.add('active');
+            state.detailTargetScroll = 0;
+            detailTrack.style.transform = `translateX(0)`;
+            
+            views.detail.classList.add('active');
             
             if(window.innerWidth < 768) {
-                detailView.scrollTop = 0;
+                views.detail.style.overflowY = 'auto';
+                views.detail.scrollTop = 0;
+            } else {
+                views.detail.style.overflowY = 'hidden';
             }
         }
 
         function closeDetail() {
-            detailView.classList.remove('active');
-            state.view = 'main';
-            state.targetScroll = state.mainScroll;
+            views.detail.classList.remove('active');
         }
 
-        function resetToHome() {
-            if(state.view === 'detail') closeDetail();
-            scrollToSection('hero');
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
         }
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
 
-        // Horizontal Scroll Engine
+        // --- 4. Scroll Engine ---
         function initScroll() {
             if (window.innerWidth < 768) return;
 
+            window.addEventListener('resize', () => {
+                // Re-render home to update widths for infinite loop
+                renderHome();
+            });
+
             window.addEventListener('wheel', (e) => {
+                if (state.view !== 'home' && state.view !== 'detail') return;
+
                 e.preventDefault();
-                
                 const isDetail = state.view === 'detail';
-                const currentContainer = isDetail ? detailTrack : mainView;
-                const containerWidth = currentContainer.scrollWidth;
-                const maxScroll = containerWidth - window.innerWidth;
                 
-                // 스크롤 속도
-                state.targetScroll += e.deltaY * 2.0;
-                state.targetScroll = Math.max(0, Math.min(state.targetScroll, maxScroll));
+                // For Home: Allow infinite scroll (no max clamp based on container width)
+                // For Detail: Standard horizontal scroll
                 
-                if (!state.isScrolling) {
-                    state.isScrolling = true;
-                    if(isDetail) detailView.classList.add('scrolling'); 
-                    else document.body.classList.add('scrolling-active');
+                if (isDetail) {
+                    const maxScroll = detailTrack.scrollWidth - window.innerWidth;
+                    state.detailTargetScroll += e.deltaY * 2.0;
+                    state.detailTargetScroll = Math.max(0, Math.min(state.detailTargetScroll, maxScroll));
+                } else {
+                    // Infinite Scroll for Home
+                    state.homeTargetScroll += e.deltaY * 2.0;
+                    // No clamping for infinite loop logic
                 }
                 
+                state.isScrolling = true;
                 clearTimeout(window.scrollTimeout);
-                window.scrollTimeout = setTimeout(() => {
-                    state.isScrolling = false;
-                    document.body.classList.remove('scrolling-active');
-                    detailView.classList.remove('scrolling');
-                }, 150);
+                window.scrollTimeout = setTimeout(() => { state.isScrolling = false; }, 150);
 
             }, { passive: false });
 
@@ -574,75 +698,47 @@
 
         function animate() {
             if (window.innerWidth >= 768) {
-                const isDetail = state.view === 'detail';
-                
-                if (isDetail) {
-                    state.detailScroll += (state.targetScroll - state.detailScroll) * 0.1;
-                    detailTrack.style.transform = `translateX(-${state.detailScroll}px)`;
-                } else {
-                    state.mainScroll += (state.targetScroll - state.mainScroll) * 0.1;
+                // Home Animation (Infinite Loop)
+                if (state.view === 'home') {
+                    // Logic: If we scroll past the 2nd set (into 3rd), jump back to 2nd set start
+                    // If we scroll before 2nd set (into 1st), jump forward to 2nd set end
+                    
+                    const singleSet = state.singleSetWidth;
+
+                    // Teleport logic
+                    if (state.homeScroll >= singleSet * 2) {
+                        const offset = state.homeScroll - (singleSet * 2);
+                        state.homeScroll = singleSet + offset;
+                        state.homeTargetScroll = state.homeScroll; // Sync target to prevent jump back
+                    } else if (state.homeScroll < singleSet) {
+                         const offset = singleSet - state.homeScroll;
+                         state.homeScroll = (singleSet * 2) - offset;
+                         state.homeTargetScroll = state.homeScroll;
+                    }
+
+                    state.homeScroll += (state.homeTargetScroll - state.homeScroll) * 0.1;
                     
                     const targetScale = state.isScrolling ? 0.95 : 1.0;
                     state.currentScale += (targetScale - state.currentScale) * 0.05;
                     
-                    mainView.style.transform = `scale(${state.currentScale}) translateX(-${state.mainScroll}px)`;
+                    // The initial padding-left (5vw) in CSS handles the centering visual
+                    // We just translate based on scroll
+                    views.home.style.transform = `scale(${state.currentScale}) translateX(-${state.homeScroll}px)`;
+                } 
+                // Detail Animation
+                else if (state.view === 'detail') {
+                    state.detailScroll += (state.detailTargetScroll - state.detailScroll) * 0.1;
+                    detailTrack.style.transform = `translateX(-${state.detailScroll}px)`;
                 }
             }
             requestAnimationFrame(animate);
         }
 
-        // Navigation Helper
-        function scrollToSection(id) {
-            const el = document.getElementById(id);
-            if(el) {
-                if(window.innerWidth >= 768) {
-                    state.targetScroll = el.offsetLeft;
-                } else {
-                    el.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-        }
-
-        // Handle Nav Link Clicks
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                
-                if (state.view === 'detail') {
-                    closeDetail();
-                    setTimeout(() => {
-                        scrollToSection(targetId);
-                    }, 300);
-                } else {
-                    scrollToSection(targetId);
-                }
-            });
-        });
-
-        // Event Listeners
-        window.addEventListener('resize', () => {
-            if(window.innerWidth < 768) {
-                mainView.style.transform = 'none';
-                detailTrack.style.transform = 'none';
-            }
-        });
-
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.filter-btn').forEach(b => {
-                    b.classList.remove('bg-brand-dark', 'text-white');
-                    b.classList.add('text-gray-500', 'border-gray-100');
-                });
-                e.target.classList.remove('text-gray-500', 'border-gray-100');
-                e.target.classList.add('bg-brand-dark', 'text-white');
-                renderGallery(e.target.dataset.filter);
-            });
-        });
-
-        // Initialize (Load data instead of just render)
         loadData();
         initScroll();
+        const hash = window.location.hash.substring(1);
+        if(['home','works','about'].includes(hash)) switchView(hash);
+        else switchView('home');
 
     </script>
 </body>
